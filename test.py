@@ -1,22 +1,17 @@
 from ASCII import binary, string
+from settings import num_bits, test_string
 
-test_string = "Hello, world!"
+def run_test():
+    with open("Outputs/output_uncompressed.txt", "w") as f:
+        f.write(test_string)
 
-with open("output_uncompressed.txt", "w") as f:
-    f.write(test_string)
+    s = binary(test_string)
+    bytess = int(s, base=2).to_bytes((len(s) + 7) // 8, byteorder='big')
+    with open(f"Outputs/output_raw_binary_{num_bits}_bit.txt", "wb") as f:
+        f.write(bytess)
 
-s = binary(test_string)
+    with open(f"Outputs/output_raw_binary_{num_bits}_bit.txt", "rb") as f:
+        raw = f.read()
 
-with open("output_binary_string.txt", "w") as f:
-    f.write(s)
+    bits = ''.join(f'{b:08b}' for b in raw)
 
-bytess = int(s, base=2).to_bytes(len(s) // 8, byteorder='big')
-with open("output_raw_binary_8_bit.txt", "wb") as f:
-    f.write(bytess)
-
-with open("output_raw_binary_8_bit.txt", "rb") as f:
-    raw = f.read()
-
-bits = ''.join(f'{b:08b}' for b in raw)
-print(bits)
-print(string(bits))
