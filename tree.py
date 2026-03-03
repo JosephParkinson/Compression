@@ -28,7 +28,7 @@ frequency_test = [
 ]
 
 def tree_from_frequency(frequency):
-    if(len(frequency) > 2):
+    if(len(frequency) > 1):
         frequency.sort(key=lambda tup: tup[1])
         lowest = frequency[0]
         second_lowest = frequency[1]
@@ -40,17 +40,63 @@ def tree_from_frequency(frequency):
         tree_from_frequency(frequency)
     return frequency
     
-# print(tree_from_frequency(frequency_test))
-with open("Texts/romeo_and_juliet.txt", "r") as f:
-    s = f.read()
-
 def character_counts(text):
-    characters = {}
-    for i in text:
-        if i not in characters.keys():
-            characters[i] = 1
+    characters = []
+    for i in range(len(text)):
+        existing_characters = [x[0] for x in characters]
+        character = text[i]
+        if character not in existing_characters:
+            characters.append((character, 1))
         else:
-            characters[i] += 1
+            for x in characters:
+                if x[0] == character:
+                    characters[characters.index(x)] = (character, x[1] + 1)
+                    break
     return characters
 
-print(tree_from_frequency(list(character_counts(s).items())))
+def get_depths(tree, depth=0):
+    # Leaf
+    if not isinstance(tree, tuple):
+        return [(tree, depth)]
+
+    # Internal node
+    left, right = tree
+    return (
+        get_depths(left, depth + 1) +
+        get_depths(right, depth + 1)
+    )
+
+def depth_per_node(tree):
+    depth = 0
+    depths = []
+    i = 0
+    while i < len(tree):
+        char = tree[i]
+        if char == "(":
+            depth += 1
+            i += 1
+        elif char == ")":
+            depth -= 1
+            i += 1
+        elif char in ["'", '"']:
+            if tree[i + 1] == "\\":
+                s = tree[i+2:i+3]
+                if(s == "n"):
+                    depths.append(("\n", depth))
+                else:
+                    depths.append(("\t", depth))
+                i += 4
+            else:
+                new_char = tree[i + 1]
+                depths.append((new_char, depth))
+                i += 3
+        else:
+            i += 1
+    return depths
+
+
+def huffman_tree_depths(s):
+    frequency = character_counts(s)
+    tree = tree_from_frequency(frequency)
+
+    return get_depths(tree[0][0])

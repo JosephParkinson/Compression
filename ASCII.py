@@ -11,20 +11,21 @@ ASCII_CHARACTERS = [
     "[","]",";","'","\n",",",".","/",
     "{","}",":","|","<",">","?",
     "~","`",
-    "\"", "\t"
+    "\"", "\t", "\\",
+    "§", "•"
 ]
 
-def int_to_bin(num):
-    if(num > 2**NUM_BITS):
+def int_to_bin(num, num_bits):
+    if(num > 2**num_bits):
         return("ERROR: bit string too long")
     
     raw_bin = str(bin(num)[2:])
-    missing_zeroes = NUM_BITS - len(raw_bin)
+    missing_zeroes = num_bits - len(raw_bin)
     return("0"*missing_zeroes + raw_bin)
 
 ASCII = dict(zip(
     ASCII_CHARACTERS, 
-    [int_to_bin(x) for x in range(len(ASCII_CHARACTERS))]
+    [int_to_bin(x, NUM_BITS) for x in range(len(ASCII_CHARACTERS))]
 ))
 
 def binary(string):
