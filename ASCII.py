@@ -1,6 +1,4 @@
-from settings import num_bits
-
-NUM_BITS = num_bits
+from settings import NUM_BITS
 
 ASCII_CHARACTERS = [
     " ", 
@@ -15,46 +13,16 @@ ASCII_CHARACTERS = [
     "§", "•"
 ]
 
-def int_to_bin(num, num_bits):
-    if(num > 2**num_bits):
+def int_to_bin(num, NUM_BITS):
+    if(num > 2**NUM_BITS):
         return("ERROR: bit string too long")
     
     raw_bin = str(bin(num)[2:])
-    missing_zeroes = num_bits - len(raw_bin)
+    missing_zeroes = NUM_BITS - len(raw_bin)
     return("0"*missing_zeroes + raw_bin)
+
 
 ASCII = dict(zip(
     ASCII_CHARACTERS, 
     [int_to_bin(x, NUM_BITS) for x in range(len(ASCII_CHARACTERS))]
 ))
-
-def binary(string):
-    output = ""
-    for i in string:
-        try:
-            encoding = ASCII.get(i)
-        except:
-            raise ValueError(f"Unsupported character: {i}")
-        output += encoding
-    missing_zeroes = -len(output) % 8
-    output += "0" * missing_zeroes
-    return output
-
-def string(binary):
-    if(NUM_BITS not in [7, 8]): 
-        return("ERROR: number of bits not supported")
-    if(len(binary) % 8 != 0):
-        return("ERROR: binary string wrong length")
-    is_binary = all(i in ["0", "1"] for i in binary)
-    if not is_binary:
-        return("ERROR: binary string contains non binary character")
-    
-    split = [binary[x:x+NUM_BITS] for x in range(0, len(binary), num_bits)]
-
-    output = ""
-    for chunk in split:
-        # TODO: find more elegant way of handling junk zeroes at the end of string
-        if(len(chunk) == num_bits):
-            output += list(ASCII.keys())[list(ASCII.values()).index(chunk)]
-
-    return output
