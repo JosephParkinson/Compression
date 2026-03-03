@@ -68,5 +68,5 @@ missing_zeroes = -len(PAYLOAD) % 8
 PAYLOAD += "0" * missing_zeroes
 
 bytess = int(PAYLOAD, base=2).to_bytes((len(PAYLOAD) + 7) // 8, byteorder='big')
-with open("romeo_and_juliet_huffman.txt", "wb") as f:
+with open("Outputs/romeo_and_juliet_huffman.txt", "wb") as f:
     f.write(bytess)

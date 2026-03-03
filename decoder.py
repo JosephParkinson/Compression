@@ -63,7 +63,7 @@ def decode(code):
 
     return decoded
 
-with open("romeo_and_juliet_huffman.txt", "rb") as f:
+with open("Outputs/romeo_and_juliet_huffman.txt", "rb") as f:
     raw = f.read()
 
 payload = ''.join(f'{b:08b}' for b in raw)
