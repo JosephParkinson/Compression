@@ -1,7 +1,8 @@
 from settings import NUM_BITS, DEPTHS_ENCODING_BITS
 from ASCII import ASCII, int_to_bin
 
-def codes_from_depths(depths_sorted):
+
+def codes_from_huffman_depths(depths_sorted):
     num = 0
     codes = []
     current_depth = depths_sorted[0][1]
@@ -48,10 +49,22 @@ def decode_depths(code):
     return depths, code[i:]
 
 
-def decode(code):
-    depths, message = decode_depths(code)
+def decode(string, from_file=False):
+    """
+    If from_file is set to True, string must be the file name to read from
+    Else, decode string
+    """
+    if from_file:
+        with open(string, "rb") as f:
+            raw = f.read()
+
+        encoded = ''.join(f'{b:08b}' for b in raw)
+    else:
+        encoded = string
     
-    codes = codes_from_depths(depths)
+    depths, message = decode_depths(encoded)
+    
+    codes = codes_from_huffman_depths(depths)
 
     decoded = ""
 
@@ -67,16 +80,5 @@ def decode(code):
 
     return decoded
 
-
-def decode_from_file(file_name):
-    with open(file_name, "rb") as f:
-        raw = f.read()
-
-    payload = ''.join(f'{b:08b}' for b in raw)
-
-    msg = decode(payload)
-
-    return msg
-
-
-print(decode_from_file("Outputs/r&J_test.txt"))
+if __name__ == "__main__":
+    print(decode("Outputs/r&J_test.txt", from_file=True))

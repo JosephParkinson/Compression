@@ -1,8 +1,8 @@
-from tree import huffman_tree_depths
+from tree import huffman_depths
 from ASCII import int_to_bin, ASCII
 from settings import DEPTHS_ENCODING_BITS
 
-def codes_from_depths(depths_sorted):
+def character_to_code_dict(depths_sorted):
     num = 0
     codes = []
     current_depth = depths_sorted[0][1]
@@ -24,7 +24,7 @@ def codes_from_depths(depths_sorted):
     return codes
 
 
-def encode_lengths(depths_sorted):
+def encode_character_code_lengths(depths_sorted):
     first_char = depths_sorted[0][0]
     current_length = depths_sorted[0][1]
     output = int_to_bin(current_length, DEPTHS_ENCODING_BITS) + ASCII[first_char]
@@ -61,23 +61,18 @@ def write_binary_string_to_file(binary_string, file_name):
         f.write(bytes)
 
 
-def encode(s, file_name):
-    depths = huffman_tree_depths(s)
+def encode(s, file_name=None):
+    depths = huffman_depths(s)
     depths.sort(key=lambda tup: tup[1])
 
-    length_encoding = encode_lengths(depths)
+    length_encoding = encode_character_code_lengths(depths)
     
-    code_dict = dict(codes_from_depths(depths))
+    code_dict = dict(character_to_code_dict(depths))
     message_encoding = encode_message(s, code_dict)
 
     encoding = length_encoding + message_encoding
 
-    write_binary_string_to_file(encoding, file_name)
+    if file_name is not None:
+        write_binary_string_to_file(encoding, file_name)
 
     return encoding
-
-
-with open("Texts/romeo_and_juliet.txt", "r") as f:
-    s = f.read()
-
-encode(s, "Outputs/r&J_test.txt")
