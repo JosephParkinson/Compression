@@ -1,15 +1,8 @@
-from tree import huffman_tree_depths
+from tree import huffman_depths
 from ASCII import int_to_bin, ASCII
-from settings import depths_encoding_bits
+from settings import DEPTHS_ENCODING_BITS
 
-with open("Texts/romeo_and_juliet.txt", "r") as f:
-    romeo_and_juliet_text = f.read()
-
-_depths = huffman_tree_depths(romeo_and_juliet_text)
-
-_depths.sort(key=lambda tup: tup[1])
-
-def codes_from_depths(depths_sorted):
+def character_to_code_dict(depths_sorted):
     num = 0
     codes = []
     current_depth = depths_sorted[0][1]
@@ -30,12 +23,11 @@ def codes_from_depths(depths_sorted):
 
     return codes
 
-code_dict = dict(codes_from_depths(_depths))
 
-def encode_lengths(depths_sorted):
+def encode_character_code_lengths(depths_sorted):
     first_char = depths_sorted[0][0]
     current_length = depths_sorted[0][1]
-    output = int_to_bin(current_length, depths_encoding_bits) + ASCII[first_char]
+    output = int_to_bin(current_length, DEPTHS_ENCODING_BITS) + ASCII[first_char]
     for i in range(1, len(depths_sorted)):
         char_depth_tup = depths_sorted[i]
         char = char_depth_tup[0]
@@ -44,13 +36,12 @@ def encode_lengths(depths_sorted):
             output = output + ASCII[char]
         else:
             output = output + ASCII["§"]
-            output = output + int_to_bin(new_length, depths_encoding_bits)
+            output = output + int_to_bin(new_length, DEPTHS_ENCODING_BITS)
             output = output + ASCII[char]
     output = output + ASCII["•"]
     
     return output
 
-LENGTH_ENCODING = encode_lengths(depths_sorted=_depths)
 
 def encode_message(s, code_dict):
     output = ""
@@ -59,14 +50,29 @@ def encode_message(s, code_dict):
 
     return output
 
-def payload():
-    return encode_lengths(_depths) + encode_message(romeo_and_juliet_text, code_dict)
 
-PAYLOAD = payload()
+def write_binary_string_to_file(binary_string, file_name):
+    missing_zeroes = -len(binary_string) % 8
+    encoding_for_file = binary_string + "0" * missing_zeroes
 
-missing_zeroes = -len(PAYLOAD) % 8
-PAYLOAD += "0" * missing_zeroes
+    bytes = int(encoding_for_file, base=2).to_bytes((len(encoding_for_file) + 7) // 8, byteorder='big')
 
-bytess = int(PAYLOAD, base=2).to_bytes((len(PAYLOAD) + 7) // 8, byteorder='big')
-with open("Outputs/romeo_and_juliet_huffman.txt", "wb") as f:
-    f.write(bytess)
+    with open(file_name, "wb") as f:
+        f.write(bytes)
+
+
+def encode(s, file_name=None):
+    depths = huffman_depths(s)
+    depths.sort(key=lambda tup: tup[1])
+
+    length_encoding = encode_character_code_lengths(depths)
+    
+    code_dict = dict(character_to_code_dict(depths))
+    message_encoding = encode_message(s, code_dict)
+
+    encoding = length_encoding + message_encoding
+
+    if file_name is not None:
+        write_binary_string_to_file(encoding, file_name)
+
+    return encoding
