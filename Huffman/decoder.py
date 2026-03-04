@@ -58,6 +58,7 @@ def decode_depths(code):
             i += ASCII_bit_length
     return depths, code[i:], ASCII_bit_length
 
+
 def decode_capitals(message):
     for upper in ASCII_CAPITALS.keys():
         message = message.replace("Δ"+ASCII_CAPITALS[upper], upper)

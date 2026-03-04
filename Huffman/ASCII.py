@@ -73,6 +73,11 @@ def int_to_bin(num, NUM_BITS):
     return("0"*missing_zeroes + raw_bin)
 
 
+ASCII_6_BIT = dict(zip(
+    ASCII_CHARACTERS_64, 
+    [int_to_bin(x, NUM_BITS) for x in range(len(ASCII_CHARACTERS))]
+))
+
 ASCII_7_BIT = dict(zip(
     ASCII_CHARACTERS, 
     [int_to_bin(x, NUM_BITS) for x in range(len(ASCII_CHARACTERS))]
@@ -81,9 +86,4 @@ ASCII_7_BIT = dict(zip(
 ASCII_8_BIT = dict(zip(
     ASCII_CHARACTERS, 
     [bin(ord(char))[2:].zfill(8) for char in ASCII_CHARACTERS]
-))
-
-ASCII_6_BIT = dict(zip(
-    ASCII_CHARACTERS_64, 
-    [int_to_bin(x, NUM_BITS) for x in range(len(ASCII_CHARACTERS))]
 ))

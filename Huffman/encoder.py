@@ -51,8 +51,9 @@ def encode_character_code_lengths(depths_sorted):
             output = output + int_to_bin(new_length, DEPTHS_ENCODING_BITS) # write new bit length down
             output = output + ascii[char]
     output = output + ascii["¬"] # Special end character
-    
+
     return output
+
 
 def message_to_ASCII_64(s):
     for upper in ASCII_CAPITALS.keys():
