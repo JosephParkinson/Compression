@@ -1,5 +1,5 @@
 from Huffman.settings import DEPTHS_ENCODING_BITS, BIT_LENGTH_ENCODING_LENGTH
-from Huffman.ASCII import ASCII, ASCII_64, ASCII_8_BIT, ASCII_CAPITALS, int_to_bin
+from Huffman.ASCII import ASCII_6_BIT, ASCII_7_BIT, ASCII_8_BIT, ASCII_CAPITALS, int_to_bin
 
 
 def codes_from_huffman_depths(depths_sorted):
@@ -30,11 +30,11 @@ def decode_depths(code):
     i = BIT_LENGTH_ENCODING_LENGTH
     ASCII_bit_length = int(code[:i], 2)
     if ASCII_bit_length == 6: 
-        ascii = ASCII_64
-    elif ASCII_bit_length == 8:
-        ascii = ASCII_8_BIT
+        ascii = ASCII_6_BIT
+    elif ASCII_bit_length == 7:
+        ascii = ASCII_7_BIT
     else:
-        ascii = ASCII
+        ascii = ASCII_8_BIT
     
     current_length = int(code[i:i+DEPTHS_ENCODING_BITS], 2)
     i += DEPTHS_ENCODING_BITS

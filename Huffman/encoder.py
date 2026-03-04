@@ -1,13 +1,13 @@
 from Huffman.tree import huffman_depths
-from Huffman.ASCII import int_to_bin, ASCII, ASCII_64, ASCII_8_BIT, ASCII_CAPITALS
+from Huffman.ASCII import int_to_bin, ASCII_6_BIT, ASCII_7_BIT, ASCII_8_BIT, ASCII_CAPITALS
 from Huffman.settings import DEPTHS_ENCODING_BITS, BIT_LENGTH_ENCODING_LENGTH, NUM_BITS
 
 if NUM_BITS == 6:
-    ascii = ASCII_64 
-elif NUM_BITS == 8:
-    ascii = ASCII_8_BIT
+    ascii = ASCII_6_BIT 
+elif NUM_BITS == 7:
+    ascii = ASCII_7_BIT
 else:
-    ascii = ASCII
+    ascii = ASCII_8_BIT
 
 def character_to_code_dict(depths_sorted):
     num = 0
