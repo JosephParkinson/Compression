@@ -1,33 +1,11 @@
 from Huffman.settings import DEPTHS_ENCODING_BITS, BIT_LENGTH_ENCODING_LENGTH
+from Huffman.codes import codes_from_depths
 from Huffman.ASCII import (
     ASCII_6_BIT,
     ASCII_7_BIT,
     ASCII_8_BIT,
     ASCII_CAPITALS,
-    int_to_bin,
 )
-
-
-def codes_from_huffman_depths(depths_sorted):
-    num = 0
-    codes = []
-    current_depth = depths_sorted[0][1]
-
-    for i in range(len(depths_sorted)):
-        char_depth_tup = depths_sorted[i]
-        char = char_depth_tup[0]
-        new_depth = char_depth_tup[1]
-
-        if new_depth == current_depth:
-            codes.append((char, int_to_bin(num, current_depth)))
-            num += 1
-        else:
-            num = num << (new_depth - current_depth)
-            current_depth = new_depth
-            codes.append((char, int_to_bin(num, current_depth)))
-            num += 1
-
-    return codes
 
 
 def decode_depths(code):
@@ -87,7 +65,7 @@ def decode(string, from_file=False):
 
     depths, message, ASCII_bit_length = decode_depths(encoded)
 
-    codes = dict(codes_from_huffman_depths(depths))
+    codes = dict(codes_from_depths(depths))
     codes = {v: k for k, v in codes.items()}
 
     decoded = ""

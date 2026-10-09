@@ -1,4 +1,5 @@
 from Huffman.tree import huffman_depths
+from Huffman.codes import codes_from_depths
 from Huffman.ASCII import (
     int_to_bin,
     ASCII_6_BIT,
@@ -14,28 +15,6 @@ elif NUM_BITS == 7:
     ascii = ASCII_7_BIT
 else:
     ascii = ASCII_8_BIT
-
-
-def character_to_code_dict(depths_sorted):
-    num = 0
-    codes = []
-    current_depth = depths_sorted[0][1]
-
-    for i in range(len(depths_sorted)):
-        char_depth_tup = depths_sorted[i]
-        char = char_depth_tup[0]
-        new_depth = char_depth_tup[1]
-
-        if new_depth == current_depth:
-            codes.append((char, int_to_bin(num, current_depth)))
-            num += 1
-        else:
-            num = num << (new_depth - current_depth)
-            current_depth = new_depth
-            codes.append((char, int_to_bin(num, current_depth)))
-            num += 1
-
-    return codes
 
 
 def encode_character_code_lengths(depths_sorted):
@@ -95,7 +74,7 @@ def encode(s, file_name=None):
 
     length_encoding = encode_character_code_lengths(depths)
 
-    code_dict = dict(character_to_code_dict(depths))
+    code_dict = dict(codes_from_depths(depths))
 
     message_encoding = encode_message(s, code_dict)
 
